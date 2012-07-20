@@ -41,9 +41,11 @@ class Mailer < ActionMailer::Base
     @author = issue.author
     @issue = issue
     @issue_url = url_for(:controller => 'issues', :action => 'show', :id => issue)
+    from = "\"#{issue.project.name}\" <#{issue.project.identifier}@redmine.inoio.de>"
     recipients = issue.recipients
     cc = issue.watcher_recipients - recipients
-    mail :to => recipients,
+    mail :from => from,
+      :to => recipients,
       :cc => cc,
       :subject => "[#{issue.project.name} - #{issue.tracker.name} ##{issue.id}] (#{issue.status.name}) #{issue.subject}"
   end
@@ -62,6 +64,7 @@ class Mailer < ActionMailer::Base
     message_id journal
     references issue
     @author = journal.user
+    from = "\"#{issue.project.name}\" <#{issue.project.identifier}@redmine.inoio.de>"
     recipients = issue.recipients
     # Watchers in cc
     cc = issue.watcher_recipients - recipients
@@ -71,7 +74,8 @@ class Mailer < ActionMailer::Base
     @issue = issue
     @journal = journal
     @issue_url = url_for(:controller => 'issues', :action => 'show', :id => issue, :anchor => "change-#{journal.id}")
-    mail :to => recipients,
+    mail :from => from,
+      :to => recipients,
       :cc => cc,
       :subject => s
   end
@@ -97,7 +101,9 @@ class Mailer < ActionMailer::Base
     @author = User.current
     @document = document
     @document_url = url_for(:controller => 'documents', :action => 'show', :id => document)
-    mail :to => document.recipients,
+    from = "\"#{document.project.name}\" <#{document.project.identifier}@redmine.inoio.de>"
+    mail :from => from,
+      :to => document.recipients,
       :subject => "[#{document.project.name}] #{l(:label_document_new)}: #{document.title}"
   end
 
@@ -129,7 +135,9 @@ class Mailer < ActionMailer::Base
     @attachments = attachments
     @added_to = added_to
     @added_to_url = added_to_url
-    mail :to => recipients,
+    from = "\"#{container.project.name}\" <#{container.project.identifier}@redmine.inoio.de>"
+    mail :from => from,
+      :to => recipients,
       :subject => "[#{container.project.name}] #{l(:label_attachment_new)}"
   end
 
@@ -144,7 +152,9 @@ class Mailer < ActionMailer::Base
     message_id news
     @news = news
     @news_url = url_for(:controller => 'news', :action => 'show', :id => news)
-    mail :to => news.recipients,
+    from = "\"#{news.project.name}\" <#{news.project.identifier}@redmine.inoio.de>"
+    mail :from => from,
+      :to => news.recipients,
       :subject => "[#{news.project.name}] #{l(:label_news)}: #{news.title}"
   end
 
@@ -161,7 +171,9 @@ class Mailer < ActionMailer::Base
     @news = news
     @comment = comment
     @news_url = url_for(:controller => 'news', :action => 'show', :id => news)
-    mail :to => news.recipients,
+    from = "\"#{news.project.name}\" <#{news.project.identifier}@redmine.inoio.de>"
+    mail :from => from,
+     :to => news.recipients,
      :cc => news.watcher_recipients,
      :subject => "Re: [#{news.project.name}] #{l(:label_news)}: #{news.title}"
   end
@@ -181,7 +193,9 @@ class Mailer < ActionMailer::Base
     cc = ((message.root.watcher_recipients + message.board.watcher_recipients).uniq - recipients)
     @message = message
     @message_url = url_for(message.event_url)
-    mail :to => recipients,
+    from = "\"#{message.board.project.name}\" <#{message.board.project.identifier}@redmine.inoio.de>"
+    mail :from => from,
+      :to => recipients,
       :cc => cc,
       :subject => "[#{message.board.project.name} - #{message.board.name} - msg#{message.root.id}] #{message.subject}"
   end
@@ -202,7 +216,9 @@ class Mailer < ActionMailer::Base
     @wiki_content_url = url_for(:controller => 'wiki', :action => 'show',
                                       :project_id => wiki_content.project,
                                       :id => wiki_content.page.title)
-    mail :to => recipients,
+    from = "\"#{wiki_content.project.name}\" <#{wiki_content.project.identifier}@redmine.inoio.de>"
+    mail :from => from,
+      :to => recipients,
       :cc => cc,
       :subject => "[#{wiki_content.project.name}] #{l(:mail_subject_wiki_content_added, :id => wiki_content.page.pretty_title)}"
   end
@@ -226,7 +242,9 @@ class Mailer < ActionMailer::Base
     @wiki_diff_url = url_for(:controller => 'wiki', :action => 'diff',
                                    :project_id => wiki_content.project, :id => wiki_content.page.title,
                                    :version => wiki_content.version)
-    mail :to => recipients,
+    from = "\"#{wiki_content.project.name}\" <#{wiki_content.project.identifier}@redmine.inoio.de>"
+    mail :from => from,
+      :to => recipients,
       :cc => cc,
       :subject => "[#{wiki_content.project.name}] #{l(:mail_subject_wiki_content_updated, :id => wiki_content.page.pretty_title)}"
   end
